@@ -13,13 +13,27 @@ import kotlinx.coroutines.launch
 class AttendanceViewModel(private val appRepository: AppRepository) : ViewModel() {
     private var _attendances = MutableLiveData<List<Attendance>>()
     val attendances get() = _attendances
+    private var _attendanceRegisters = MutableLiveData<List<Attendance>>()
+    val attendanceRegisters get() = _attendanceRegisters
 
     init {
         getAllAttendances()
+        getAllAttendanceRegisters()
     }
 
     private fun getAllAttendances() {
-        _attendances.value = appRepository.getAllAttendances().value
+        viewModelScope.launch {
+            appRepository.getAllAttendances().observeForever { attendances ->
+                _attendances.value = attendances
+            }
+        }
+    }
+    private fun getAllAttendanceRegisters() {
+        viewModelScope.launch {
+            appRepository.getAllAttendanceRegisters().observeForever { attendances ->
+                attendanceRegisters.value = attendances
+            }
+        }
     }
 
     fun insert(attendance: Attendance) {
@@ -27,16 +41,9 @@ class AttendanceViewModel(private val appRepository: AppRepository) : ViewModel(
             appRepository.insert(attendance)
         }
     }
+    fun updateAttendance(attendance: Attendance){
+        viewModelScope.launch {
+            appRepository.updateAttendance(attendance)
+        }
+    }
 }
-//val initialData = listOf(
-//    Attendance(id = 1, name = "John", score = 85.5f, register = true),
-//    Attendance(id = 2, name = "Alice", score = 90.0f, register = true),
-//    Attendance(id = 3, name = "Bob", score = 78.2f, register = false),
-//    Attendance(id = 4, name = "Emma", score = 95.7f, register = true),
-//    Attendance(id = 5, name = "Michael", score = 81.3f, register = false),
-//    Attendance(id = 6, name = "Sophia", score = 88.9f, register = true),
-//    Attendance(id = 7, name = "William", score = 75.6f, register = false),
-//    Attendance(id = 8, name = "Olivia", score = 92.4f, register = true),
-//    Attendance(id = 9, name = "James", score = 79.8f, register = true),
-//    Attendance(id = 10, name = "Emily", score = 87.1f, register = false)
-//)

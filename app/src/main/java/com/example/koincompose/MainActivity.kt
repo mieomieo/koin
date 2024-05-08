@@ -16,10 +16,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -65,16 +64,16 @@ class MainActivity : ComponentActivity() {
 fun MainScreen(navController: NavController) {
     val vm: AttendanceViewModel = koinViewModel()
     val initialData = listOf(
-        Attendance(id = 1, name = "John", score = 5.5f, register = true),
-        Attendance(id = 2, name = "Alice", score = 9.0f, register = true),
-        Attendance(id = 3, name = "Bob", score = 7.2f, register = false),
-        Attendance(id = 4, name = "Emma", score = 9.7f, register = true),
-        Attendance(id = 5, name = "Michael", score = 8.3f, register = false),
-        Attendance(id = 6, name = "Sophia", score = 8.9f, register = true),
-        Attendance(id = 7, name = "William", score = 7.6f, register = false),
-        Attendance(id = 8, name = "Olivia", score = 9.4f, register = true),
-        Attendance(id = 9, name = "James", score = 7.8f, register = true),
-        Attendance(id = 10, name = "Emily", score = 7.1f, register = false)
+        Attendance(id = 1, name = "John", score = null, register = true),
+        Attendance(id = 2, name = "Alice", score = 2.4f, register = true),
+        Attendance(id = 3, name = "Bob", score = 3.2f, register = false),
+        Attendance(id = 4, name = "Emma", score = null, register = true),
+        Attendance(id = 5, name = "Michael", score = null, register = false),
+        Attendance(id = 6, name = "Sophia", score = null, register = true),
+        Attendance(id = 7, name = "William", score = null, register = false),
+        Attendance(id = 8, name = "Olivia", score = null, register = true),
+        Attendance(id = 9, name = "James", score = null, register = true),
+        Attendance(id = 10, name = "Emily", score = null, register = false)
     )
 
 
@@ -88,7 +87,7 @@ fun MainScreen(navController: NavController) {
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxSize()
     ) {
-        Text(text = "Koin assignment")
+        Text(text = stringResource(id = R.string.koin_assignment))
         Row(
             modifier = Modifier.fillMaxSize(),
             horizontalArrangement = Arrangement.Center,
@@ -100,7 +99,7 @@ fun MainScreen(navController: NavController) {
                     .weight(1f)
                     .padding(16.dp)
             ) {
-                Text("Register Screen")
+                Text(text = stringResource(id = R.string.register_screen))
             }
             Button(
                 onClick = { navController.navigate("grading_screen") },
@@ -108,7 +107,7 @@ fun MainScreen(navController: NavController) {
                     .weight(1f)
                     .padding(16.dp)
             ) {
-                Text("Grading Screen")
+                Text(text = stringResource(id = R.string.grading_screen))
             }
         }
     }

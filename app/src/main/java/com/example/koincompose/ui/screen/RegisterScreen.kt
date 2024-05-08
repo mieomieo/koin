@@ -25,29 +25,41 @@ import com.example.koincompose.data.viewmodel.AttendanceViewModel
 import org.koin.androidx.compose.koinViewModel
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-
+import androidx.compose.ui.res.stringResource
+import com.example.koincompose.R
 
 @Preview
 @Composable
 fun RegisterScreen() {
     val vm: AttendanceViewModel = koinViewModel()
     val attendances = vm.attendances.observeAsState(initial = emptyList())
+    val selectedAttendances = remember { mutableListOf<Attendance>() }
     Column {
         Text(
-            text = "Attendance", modifier = Modifier
+            text = stringResource(id = R.string.register), modifier = Modifier
                 .fillMaxWidth()
                 .background(Color.Cyan)
         )
         attendances.value?.let {
             LazyColumn(modifier = Modifier.weight(1f)) {
                 items(it) { attendance ->
-                    AttendanceItemView(attendance)
+                    AttendanceItemView(attendance = attendance, onCheckedChange = { isChecked ->
+                        if (isChecked) {
+                            selectedAttendances += attendance
+                        } else {
+                            selectedAttendances -= attendance
+                        }
+                    })
                 }
             }
         }
 
-        Button(onClick = { /*TODO*/ }, modifier = Modifier.fillMaxWidth()) {
-            Text(text = "Save to prefs")
+        Button(onClick = {
+            selectedAttendances.forEach { selectedAttendance ->
+                vm.updateAttendance(selectedAttendance)
+            }
+        }, modifier = Modifier.fillMaxWidth()) {
+            Text(text = stringResource(id = R.string.save_to_prefs))
         }
     }
 
@@ -55,10 +67,8 @@ fun RegisterScreen() {
 }
 
 @Composable
-fun AttendanceItemView(attendance: Attendance) {
-    var checkValue = remember {
-        mutableStateOf(attendance.register)
-    }
+fun AttendanceItemView(attendance: Attendance, onCheckedChange: (Boolean) -> Unit) {
+    var checkValue by remember { mutableStateOf(attendance.register) }
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -71,8 +81,11 @@ fun AttendanceItemView(attendance: Attendance) {
                 .fillMaxWidth()
         ) {
             Checkbox(
-                checked = checkValue.value,
-                onCheckedChange = { checkValue.value = it },
+                checked = checkValue,
+                onCheckedChange = { isChecked ->
+                    checkValue = isChecked
+                    onCheckedChange(isChecked)
+                },
                 modifier = Modifier.padding(end = 8.dp)
             )
             Text(

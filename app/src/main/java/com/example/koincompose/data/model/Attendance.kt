@@ -7,10 +7,10 @@ import kotlinx.parcelize.Parcelize
 
 @Entity(tableName="table_attendance")
 @Parcelize
-data class Attendance (
+data class Attendance(
     @PrimaryKey(autoGenerate = true)
     val id:Int?=null,
     val name:String,
-    val score:Float,
+    val score: Float?,
     val register:Boolean
 ): Parcelable

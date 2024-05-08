@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">KoinCompose</string>
+    <string name="register">Register</string>
+    <string name="koin_assignment">Koin assignment</string>
+    <string name="grading_screen">Grading Screen</string>
+    <string name="register_screen">Register Screen</string>
+    <string name="save_to_prefs">Save to prefs</string>
+    <string name="save_to_db">Save to db</string>
 </resources>

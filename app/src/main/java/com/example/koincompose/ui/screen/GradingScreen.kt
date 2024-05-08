@@ -16,29 +16,24 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.koincompose.data.model.Attendance
+import com.example.koincompose.data.viewmodel.AttendanceViewModel
+import org.koin.androidx.compose.koinViewModel
+import com.example.koincompose.R
 
 @Preview
 @Composable
 fun GradingScreen() {
-    val attendances = listOf(
-        Attendance(id = 1, name = "John", score = 85.5f, register = true),
-        Attendance(id = 2, name = "Alice", score = 90.0f, register = true),
-        Attendance(id = 3, name = "Bob", score = 78.2f, register = false),
-        Attendance(id = 4, name = "Emma", score = 95.7f, register = true),
-        Attendance(id = 5, name = "Michael", score = 81.3f, register = false),
-        Attendance(id = 6, name = "Sophia", score = 88.9f, register = true),
-        Attendance(id = 7, name = "William", score = 75.6f, register = false),
-        Attendance(id = 8, name = "Olivia", score = 92.4f, register = true),
-        Attendance(id = 9, name = "James", score = 79.8f, register = true),
-        Attendance(id = 10, name = "Emily", score = 87.1f, register = false)
-    )
+    val vm: AttendanceViewModel = koinViewModel()
+    val attendances = vm.attendanceRegisters.observeAsState(emptyList())
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -46,17 +41,19 @@ fun GradingScreen() {
 
     ) {
         Text(
-            text = "Grading", modifier = Modifier
+            text = stringResource(id = R.string.grading_screen), modifier = Modifier
                 .fillMaxWidth()
                 .background(Color.Cyan)
         )
-        LazyColumn(modifier = Modifier.weight(1f)) {
-            items(attendances) {
-                AttendanceGradingItemView(it)
+        attendances.value?.let {
+            LazyColumn(modifier = Modifier.weight(1f)) {
+                items(it) { attendance ->
+                    AttendanceGradingItemView(attendance)
+                }
             }
         }
         Button(onClick = { /*TODO*/ }, modifier = Modifier.fillMaxWidth()) {
-            Text(text = "Save to db")
+            Text(text = stringResource(id = R.string.save_to_db))
         }
     }
 }
@@ -64,7 +61,7 @@ fun GradingScreen() {
 @Composable
 fun AttendanceGradingItemView(attendance: Attendance) {
     var numberScore by remember {
-        mutableStateOf("")
+        mutableStateOf(attendance.score?.toString() ?: "")
     }
     Card(
         modifier = Modifier

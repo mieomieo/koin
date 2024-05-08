@@ -17,4 +17,8 @@ class AppRepositoryImpl(private val attendanceDao: AttendanceDao) : AppRepositor
     override suspend fun insert(attendance: Attendance) {
         attendanceDao.insertAttendance(attendance)
     }
+
+    override suspend fun updateAttendance(attendance: Attendance) {
+        attendanceDao.updateAttendance(attendance)
+    }
 }

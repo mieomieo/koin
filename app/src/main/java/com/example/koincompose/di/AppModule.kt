@@ -15,8 +15,6 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 val appModule = module {
-    Log.e("Can run here","Run1")
-
     single<AppDatabase> {
         Log.e("Cannot run here","Run2")
         provideDatabase(get()) }
@@ -29,6 +27,5 @@ val appModule = module {
 
 
 fun provideDatabase(application: Application): AppDatabase {
-    Log.e("Runnnnnnnnnnn","Rrrrrrrrrrrrrrrrrrrrrunnnnnnnnnnnnnn")
     return Room.databaseBuilder(application, AppDatabase::class.java, "attendance_db").build()
 }
