@@ -11,6 +11,6 @@ data class Attendance(
     @PrimaryKey(autoGenerate = true)
     val id:Int?=null,
     val name:String,
-    val score: Float?,
-    val register:Boolean
+    var score: Float?,
+    var register:Boolean
 ): Parcelable

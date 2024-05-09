@@ -1,5 +1,6 @@
 package com.example.koincompose.data.repository
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import com.example.koincompose.data.dao.AttendanceDao
 import com.example.koincompose.data.model.Attendance
@@ -19,6 +20,8 @@ class AppRepositoryImpl(private val attendanceDao: AttendanceDao) : AppRepositor
     }
 
     override suspend fun updateAttendance(attendance: Attendance) {
+        Log.d("Update", "abc")
         attendanceDao.updateAttendance(attendance)
+
     }
 }

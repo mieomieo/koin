@@ -13,27 +13,30 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import com.example.koincompose.R
 import com.example.koincompose.data.model.Attendance
 import com.example.koincompose.data.viewmodel.AttendanceViewModel
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
-import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.res.stringResource
-import com.example.koincompose.R
 
-@Preview
 @Composable
-fun RegisterScreen() {
+fun RegisterScreen(navController: NavController) {
     val vm: AttendanceViewModel = koinViewModel()
+    val scope = rememberCoroutineScope()
     val attendances = vm.attendances.observeAsState(initial = emptyList())
-    val selectedAttendances = remember { mutableListOf<Attendance>() }
     Column {
         Text(
             text = stringResource(id = R.string.register), modifier = Modifier
@@ -45,9 +48,9 @@ fun RegisterScreen() {
                 items(it) { attendance ->
                     AttendanceItemView(attendance = attendance, onCheckedChange = { isChecked ->
                         if (isChecked) {
-                            selectedAttendances += attendance
+                             attendance.register=true
                         } else {
-                            selectedAttendances -= attendance
+                            attendance.register=false
                         }
                     })
                 }
@@ -55,8 +58,15 @@ fun RegisterScreen() {
         }
 
         Button(onClick = {
-            selectedAttendances.forEach { selectedAttendance ->
-                vm.updateAttendance(selectedAttendance)
+            scope.launch {
+                val job = GlobalScope.launch {
+//                    val debug = tempAttendances
+                    attendances.value.forEach { attendance ->
+                        vm.updateAttendance(attendance)
+                    }
+                }
+                job.join()
+                navController.navigate("main_screen")
             }
         }, modifier = Modifier.fillMaxWidth()) {
             Text(text = stringResource(id = R.string.save_to_prefs))
@@ -90,7 +100,7 @@ fun AttendanceItemView(attendance: Attendance, onCheckedChange: (Boolean) -> Uni
             )
             Text(
                 text = attendance.name,
-                modifier = Modifier.weight(1f) // Giãn text để nó chiếm hết phần còn lại của Row
+                modifier = Modifier.weight(1f)
             )
         }
     }
